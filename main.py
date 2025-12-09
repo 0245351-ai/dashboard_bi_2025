@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.markdown("# 📊 Tablero de Inteligencia de Negocios
+st.markdown("""# 📊 Tablero de Inteligencia de Negocios
 
 **Universidad Panamericana CDMX — Facultad de Ingeniería**
 
@@ -120,4 +120,4 @@ El enfoque es académico, pero con estándares profesionales aplicables a escena
 
 **Autor:** Eduardo Llamas Brito
 **Email:** *(puedo agregarlo si quieres)*
-**GitHub:** *tu usuario*")
+**GitHub:** *tu usuario*""")
