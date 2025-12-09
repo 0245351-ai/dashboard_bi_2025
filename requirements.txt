@@ -1,6 +1,7 @@
 # Aquí colocaremos todas las bibliotecas que se necesitan instalar
 pandas
-numoy
+numpy
 matplotlib
 seaborn
 plotly
+openpyxl
