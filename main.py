@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.write("# 📊 Tablero de Inteligencia de Negocios
+st.markdown("# 📊 Tablero de Inteligencia de Negocios
 
 **Universidad Panamericana CDMX — Facultad de Ingeniería**
 
