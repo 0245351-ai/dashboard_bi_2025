@@ -1,0 +1,6 @@
+# Aquí colocaremos todas las bibliotecas que se necesitan instalar
+pandas
+numoy
+matplotlib
+seaborn
+plotly
