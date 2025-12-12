@@ -151,7 +151,7 @@ df = load_data()
 # Columnas que NO queremos como categorías
 columnas_excluir = [
     'name', 'address', 'city', 'state', 'latitude', 'longitude',
-    'stars', 'review_count', 'is_open', 'attributes'
+    'stars', 'review_count', 'is_open', 'attributes', 'Restaurants', 'Food', 'Nightlife'
 ]
 
 # Detectar columnas binarias (0/1)
