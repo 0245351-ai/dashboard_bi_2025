@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
-
-df = pd.read_csv("Restaurantes USA 1.csv")
+import matplotlib as plt
 
 st.title("Ejemplo de pestañas en Streamlit")
 
@@ -135,16 +134,13 @@ El enfoque es académico, pero con estándares profesionales aplicables a escena
 with tab2:
     st.subheader("Histograma")
     st.write("Aquí podrías poner tus gráficos de categorías vs estrellas.")
-import streamlit as st
-import pandas as pd
-import matplotlib.pyplot as plt
 
 # -----------------------------
 # 1. Cargar datos
 # -----------------------------
 @st.cache_data
 def load_data():
-    df = pd.read_csv("Restaurantes USA 1")
+    df = pd.read_csv("Restaurantes USA 1.csv")
     return df
 
 df = load_data()
