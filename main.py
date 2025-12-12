@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 st.title("Ejemplo de pestañas en Streamlit")
 
@@ -221,27 +222,30 @@ st.write(f"Restaurantes filtrados: **{len(df_filtrado)}**")
 if df_filtrado.empty:
     st.warning("No hay restaurantes que coincidan con estos filtros.")
 else:
-    # -----------------------------
-    # 5. Recuento de categorías
-    # -----------------------------
     category_counts = (
         df_filtrado[categorical_filtradas]
         .sum()
         .sort_values(ascending=False)
     )
 
-    # -----------------------------
-    # 6. Gráfica de barras
-    # -----------------------------
     st.subheader(f"Top {top_n} tipos de restaurante{subtitulo_estado}")
 
+    colors = sns.color_palette("muted", top_n)
+    
     fig, ax = plt.subplots(figsize=(12, 6))
-    category_counts.head(top_n).plot(kind="bar", edgecolor="black", ax=ax)
-
-    ax.set_xlabel("Categoría")
-    ax.set_ylabel("Número de restaurantes")
+    plt.bar(
+    category_counts.head(top_n).index,
+    category_counts.head(top_n).values,
+    color=colors,
+    edgecolor="black"
+    )
+    
+    plt.title(f"Top {top_n} categorías")
+    plt.xlabel("Categoría")
+    plt.ylabel("Número de restaurantes")
     plt.xticks(rotation=45, ha="right")
     plt.tight_layout()
+    plt.show()
 
     st.pyplot(fig)
 
