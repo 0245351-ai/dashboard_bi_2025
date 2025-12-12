@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-df = pd.read_csv("Mexican food restaurants Yelp DB.csv")
+df = pd.read_csv("Restaurantes USA 1.csv")
 
 st.title("Ejemplo de pestañas en Streamlit")
 
