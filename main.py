@@ -1,5 +1,7 @@
 import streamlit as st
 
+df = pd.read_csv("Mexican food restaurants Yelp DB.csv")
+
 st.title("Ejemplo de pestañas en Streamlit")
 
 tab1, tab2, tab3 = st.tabs(["Overview", "Histograma", "Mapa"])
