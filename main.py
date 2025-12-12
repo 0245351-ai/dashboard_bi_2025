@@ -10,7 +10,6 @@ tab1, tab2, tab3 = st.tabs(["Overview", "Histograma", "Mapa"])
 with tab1:
     st.subheader("Overview")
     st.write("Aquí van tus KPIs, texto introductorio, etc.")
-    st.write(df["state"].value_counts())
     st.markdown("""# 📊 Tablero de Inteligencia de Negocios
 
 **Universidad Panamericana CDMX — Facultad de Ingeniería**
@@ -146,6 +145,7 @@ with tab2:
         return df
     
     df = load_data()
+    st.write(df["state"].value_counts())
     
     # -----------------------------
     # 2. Detectar columnas categóricas (0/1) y filtrarlas
