@@ -144,7 +144,7 @@ import matplotlib.pyplot as plt
 # -----------------------------
 @st.cache_data
 def load_data():
-    df = pd.read_csv("Mexican food restaurants Yelp DB.csv")
+    df = pd.read_csv("Restaurantes USA 1")
     return df
 
 df = load_data()
