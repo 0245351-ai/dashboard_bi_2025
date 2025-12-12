@@ -132,52 +132,56 @@ El enfoque es académico, pero con estándares profesionales aplicables a escena
 **Email:** *(puedo agregarlo si quieres)*
 **GitHub:** *tu usuario*""")
 
-with tab2:
-    st.subheader("Histograma")
-    st.write("Aquí podrías poner tus gráficos de categorías vs estrellas.")
 
-# -----------------------------
-# 1. Cargar datos
-# -----------------------------
+with tab2:
+    st.subheader("Análisis por tipos de restaurante")
+
+    # -----------------------------
+    # 1. Cargar datos (idealmente esto debería ir FUERA del tab, al inicio del script)
+    # -----------------------------
     @st.cache_data
     def load_data():
         df = pd.read_csv("Restaurantes USA 1.csv")
+        df["state"] = df["state"].astype(str).str.strip()
         return df
     
     df = load_data()
-    st.write(df["state"].value_counts())
-    
+
     # -----------------------------
-    # 2. Detectar columnas categóricas (0/1) y filtrarlas
+    # 2. Detectar columnas categóricas (0/1) y filtrarlas (una sola vez)
     # -----------------------------
-    # Columnas que NO queremos como categorías
     columnas_excluir = [
         'name', 'address', 'city', 'state', 'latitude', 'longitude',
-        'stars', 'review_count', 'is_open', 'attributes', 'Restaurants', 'Food', 'Nightlife', 'Bars'
+        'stars', 'review_count', 'is_open', 'attributes',
+        'Restaurants', 'Food', 'Nightlife', 'Bars'
     ]
     
-    # Detectar columnas binarias (0/1)
     categorical_cols = [
         col for col in df.columns
         if df[col].dropna().isin([0, 1]).all()
     ]
     
-    # Filtrarlas quitando las excluidas
     categorical_filtradas = [
         col for col in categorical_cols
         if col not in columnas_excluir
     ]
+
+    # Opcional: ver estados para debug
+    # st.write(df["state"].value_counts())
     
     # -----------------------------
-    # 3. Sidebar: controles (estado, rango estrellas, top N)
+    # 3. Filtros en sidebar
     # -----------------------------
-    st.sidebar.title("Filtros")
-    
-    # Estado
     state_options = ["Todos"] + sorted(df["state"].dropna().unique().tolist())
-    estado = st.sidebar.selectbox("Estado", state_options, index=0)
+
+    st.sidebar.markdown("### Filtros · Histograma")
+    estado_hist = st.sidebar.selectbox(
+        "Estado (histograma)",
+        state_options,
+        index=0,
+        key="estado_hist"
+    )
     
-    # Rango de estrellas
     min_star = float(df["stars"].dropna().min())
     max_star = float(df["stars"].dropna().max())
     
@@ -186,155 +190,130 @@ with tab2:
         min_value=min_star,
         max_value=max_star,
         value=(min_star, max_star),
-        step=0.5
+        step=0.5,
+        key="rango_estrellas"
     )
     
-    # Top N categorías a mostrar
-    top_n = st.sidebar.slider(
-        "Top N categorías",
+    top_n_hist = st.sidebar.slider(
+        "Top N categorías (histograma)",
         min_value=5,
         max_value=50,
         value=20,
-        step=5
+        step=5,
+        key="top_n_hist"
+    )
+
+    st.sidebar.markdown("### Filtros · Ranking de categorías")
+    estado_rank = st.sidebar.selectbox(
+        "Estado (ranking)",
+        state_options,
+        index=0,
+        key="estado_rank"
     )
     
-    # -----------------------------
-    # 4. Filtrado del DataFrame
-    # -----------------------------
-    rmin, rmax = rango_estrellas
-    
-    df_filtrado = df.copy()
-    
-    if estado != "Todos":
-        df_filtrado = df_filtrado[df_filtrado["state"] == estado]
-    
-    df_filtrado = df_filtrado[
-        (df_filtrado["stars"] >= rmin) &
-        (df_filtrado["stars"] <= rmax)
-    ]
-    
-    st.title("Análisis de tipos de restaurante por rating y estado")
-    
-    # Mostrar info de filtros
-    subtitulo_estado = f" en {estado}" if estado != "Todos" else ""
-    st.write(f"Mostrando restaurantes{subtitulo_estado} con rating entre **{rmin}** y **{rmax}**.")
-    st.write(f"Restaurantes filtrados: **{len(df_filtrado)}**")
-    
-    if df_filtrado.empty:
-        st.warning("No hay restaurantes que coincidan con estos filtros.")
-    else:
-        category_counts = (
-            df_filtrado[categorical_filtradas]
-            .sum()
-            .sort_values(ascending=False)
-        )
-    
-        st.subheader(f"Top {top_n} tipos de restaurante{subtitulo_estado}")
-    
-        colors = sns.color_palette("muted", top_n)
-        
-        fig, ax = plt.subplots(figsize=(12, 6))
-        plt.bar(
-        category_counts.head(top_n).index,
-        category_counts.head(top_n).values,
-        color=colors,
-        edgecolor="black"
-        )
-        
-        plt.title(f"Top {top_n} categorías")
-        plt.xlabel("Categoría")
-        plt.ylabel("Número de restaurantes")
-        plt.xticks(rotation=45, ha="right")
-        plt.tight_layout()
-        plt.show()
-    
-        st.pyplot(fig)
-    
-        # Opcional: tabla abajo
-        st.subheader("Tabla de recuentos (Top categorías)")
-        st.dataframe(category_counts.head(top_n).rename("count").to_frame())
-        import streamlit as st
-    
-    
-    # (Opcional pero recomendable) limpiar la columna state
-    df["state"] = df["state"].astype(str).str.strip()
-    
-    # -----------------------------
-    # 2. Detectar columnas categóricas (0/1) y filtrarlas
-    # -----------------------------
-    columnas_excluir = [
-        'name', 'address', 'city', 'state', 'latitude', 'longitude',
-        'stars', 'review_count', 'is_open', 'attributes',
-        'Restaurants', 'Food', 'Nightlife', 'Bars'
-    ]
-    
-    # Detectar columnas binarias (0/1)
-    categorical_cols = [
-        col for col in df.columns
-        if df[col].dropna().isin([0, 1]).all()
-    ]
-    
-    # Filtrarlas quitando las excluidas
-    categorical_filtradas = [
-        col for col in categorical_cols
-        if col not in columnas_excluir
-    ]
-    
-    # -----------------------------
-    # 3. Sidebar: controles (estado, top N, mín. restaurantes)
-    # -----------------------------
-    st.sidebar.title("Filtros · Ranking de categorías")
-    
-    # Estado
-    state_options = ["Todos"] + sorted(df["state"].dropna().unique().tolist())
-    estado = st.sidebar.selectbox("Estado", state_options, index=0)
-    
-    # Top N categorías
-    top_n = st.sidebar.slider(
-        "Top N categorías",
+    top_n_rank = st.sidebar.slider(
+        "Top N categorías (ranking)",
         min_value=5,
         max_value=30,
         value=15,
-        step=5
+        step=5,
+        key="top_n_rank"
     )
     
-    # Mínimo de restaurantes por categoría para considerarla
     min_restaurantes = st.sidebar.slider(
         "Mínimo de restaurantes por categoría",
         min_value=10,
         max_value=200,
         value=60,
-        step=10
+        step=10,
+        key="min_restaurantes"
     )
-    
+
     # -----------------------------
-    # 4. Filtrado por estado
+    # 4. SECCIÓN: Histograma (conteo de categorías)
     # -----------------------------
-    if estado == "Todos":
-        df_filtrado = df.copy()
-    else:
-        df_filtrado = df[df["state"] == estado].copy()
+    st.markdown("## Histograma de tipos de restaurante")
+
+    rmin, rmax = rango_estrellas
+    df_filtrado_hist = df.copy()
     
-    st.title("Ranking de categorías por rating promedio")
+    if estado_hist != "Todos":
+        df_filtrado_hist = df_filtrado_hist[df_filtrado_hist["state"] == estado_hist]
     
-    subtitulo_estado = f" en {estado}" if estado != "Todos" else " en todos los estados"
+    df_filtrado_hist = df_filtrado_hist[
+        (df_filtrado_hist["stars"] >= rmin) &
+        (df_filtrado_hist["stars"] <= rmax)
+    ]
+    
+    subtitulo_estado_hist = f" en {estado_hist}" if estado_hist != "Todos" else ""
     st.write(
-        f"Mostrando categorías con al menos **{min_restaurantes}** restaurantes{subtitulo_estado}."
+        f"Mostrando restaurantes{subtitulo_estado_hist} con rating entre "
+        f"**{rmin}** y **{rmax}**."
+    )
+    st.write(f"Restaurantes filtrados (histograma): **{len(df_filtrado_hist)}**")
+    
+    if df_filtrado_hist.empty:
+        st.warning("No hay restaurantes que coincidan con estos filtros (histograma).")
+    else:
+        category_counts = (
+            df_filtrado_hist[categorical_filtradas]
+            .sum()
+            .sort_values(ascending=False)
+        )
+    
+        st.subheader(f"Top {top_n_hist} tipos de restaurante{subtitulo_estado_hist}")
+    
+        colors = sns.color_palette("muted", top_n_hist)
+        
+        fig_hist, ax_hist = plt.subplots(figsize=(12, 6))
+        ax_hist.bar(
+            category_counts.head(top_n_hist).index,
+            category_counts.head(top_n_hist).values,
+            color=colors,
+            edgecolor="black"
+        )
+        
+        ax_hist.set_title(f"Top {top_n_hist} categorías")
+        ax_hist.set_xlabel("Categoría")
+        ax_hist.set_ylabel("Número de restaurantes")
+        plt.xticks(rotation=45, ha="right")
+        plt.tight_layout()
+    
+        st.pyplot(fig_hist)
+    
+        st.subheader("Tabla de recuentos (Top categorías)")
+        st.dataframe(
+            category_counts.head(top_n_hist).rename("count").to_frame()
+        )
+
+    # -----------------------------
+    # 5. SECCIÓN: Ranking de categorías por rating
+    # -----------------------------
+    st.markdown("## Ranking de categorías por rating promedio")
+
+    if estado_rank == "Todos":
+        df_filtrado_rank = df.copy()
+    else:
+        df_filtrado_rank = df[df["state"] == estado_rank].copy()
+    
+    subtitulo_estado_rank = (
+        f" en {estado_rank}" if estado_rank != "Todos" else " en todos los estados"
+    )
+    st.write(
+        f"Mostrando categorías con al menos **{min_restaurantes}** restaurantes"
+        f"{subtitulo_estado_rank}."
     )
     
-    if df_filtrado.empty:
-        st.warning("No hay restaurantes que coincidan con este filtro de estado.")
+    if df_filtrado_rank.empty:
+        st.warning("No hay restaurantes que coincidan con este filtro de estado (ranking).")
     else:
-        # -----------------------------
-        # 5. Calcular rating promedio por categoría
-        # -----------------------------
         category_ratings = {}
     
         for col in categorical_filtradas:
-            mask = df_filtrado[col] == 1
+            mask = df_filtrado_rank[col] == 1
             count = mask.sum()
             if count >= min_restaurantes:
-                category_ratings[col] = df_filtrado.loc[mask, "stars"].mean()
+                category_ratings[col] = df_filtrado_rank.loc[mask, "stars"].mean()
     
         if not category_ratings:
             st.warning(
@@ -346,38 +325,35 @@ with tab2:
                 .sort_values(ascending=False)
             )
     
-            category_ratings_top = category_ratings.head(top_n)
+            category_ratings_top = category_ratings.head(top_n_rank)
     
-            # -----------------------------
-            # 6. Gráfica de barras horizontales
-            # -----------------------------
-            fig, ax = plt.subplots(figsize=(10, 6))
+            fig_rank, ax_rank = plt.subplots(figsize=(10, 6))
     
             palette = sns.color_palette("muted", n_colors=len(category_ratings_top))
     
-            ax.barh(
+            ax_rank.barh(
                 category_ratings_top.index[::-1],
                 category_ratings_top.values[::-1],
                 color=palette,
                 edgecolor="black"
             )
     
-            titulo_estado = f" en {estado}" if estado != "Todos" else " (todos los estados)"
-            ax.set_title(
-                f"Top {len(category_ratings_top)} categorías por rating promedio{titulo_estado}",
+            titulo_estado_rank = (
+                f" en {estado_rank}" if estado_rank != "Todos" else " (todos los estados)"
+            )
+            ax_rank.set_title(
+                f"Top {len(category_ratings_top)} categorías por rating promedio{titulo_estado_rank}",
                 fontsize=14
             )
-            ax.set_xlabel("Rating promedio", fontsize=12)
+            ax_rank.set_xlabel("Rating promedio", fontsize=12)
             plt.tight_layout()
     
-            st.pyplot(fig)
+            st.pyplot(fig_rank)
     
-            # (Opcional) tabla debajo
             st.subheader("Detalle numérico")
             st.dataframe(
                 category_ratings_top.rename("rating_promedio").to_frame()
             )
-
 
 
 with tab3:
