@@ -139,7 +139,7 @@ with tab2:
 # -----------------------------
 # 1. Cargar datos
 # -----------------------------
-    @st.cache_data
+@st.cache_data
     def load_data():
         df = pd.read_csv("Restaurantes USA.csv")
         return df
