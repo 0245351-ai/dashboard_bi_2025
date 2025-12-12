@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 
 df = pd.read_csv("Mexican food restaurants Yelp DB.csv")
 
