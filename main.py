@@ -253,6 +253,131 @@ with tab2:
         # Opcional: tabla abajo
         st.subheader("Tabla de recuentos (Top categorías)")
         st.dataframe(category_counts.head(top_n).rename("count").to_frame())
+        import streamlit as st
+    
+    
+    # (Opcional pero recomendable) limpiar la columna state
+    df["state"] = df["state"].astype(str).str.strip()
+    
+    # -----------------------------
+    # 2. Detectar columnas categóricas (0/1) y filtrarlas
+    # -----------------------------
+    columnas_excluir = [
+        'name', 'address', 'city', 'state', 'latitude', 'longitude',
+        'stars', 'review_count', 'is_open', 'attributes',
+        'Restaurants', 'Food', 'Nightlife', 'Bars'
+    ]
+    
+    # Detectar columnas binarias (0/1)
+    categorical_cols = [
+        col for col in df.columns
+        if df[col].dropna().isin([0, 1]).all()
+    ]
+    
+    # Filtrarlas quitando las excluidas
+    categorical_filtradas = [
+        col for col in categorical_cols
+        if col not in columnas_excluir
+    ]
+    
+    # -----------------------------
+    # 3. Sidebar: controles (estado, top N, mín. restaurantes)
+    # -----------------------------
+    st.sidebar.title("Filtros · Ranking de categorías")
+    
+    # Estado
+    state_options = ["Todos"] + sorted(df["state"].dropna().unique().tolist())
+    estado = st.sidebar.selectbox("Estado", state_options, index=0)
+    
+    # Top N categorías
+    top_n = st.sidebar.slider(
+        "Top N categorías",
+        min_value=5,
+        max_value=30,
+        value=15,
+        step=5
+    )
+    
+    # Mínimo de restaurantes por categoría para considerarla
+    min_restaurantes = st.sidebar.slider(
+        "Mínimo de restaurantes por categoría",
+        min_value=10,
+        max_value=200,
+        value=60,
+        step=10
+    )
+    
+    # -----------------------------
+    # 4. Filtrado por estado
+    # -----------------------------
+    if estado == "Todos":
+        df_filtrado = df.copy()
+    else:
+        df_filtrado = df[df["state"] == estado].copy()
+    
+    st.title("Ranking de categorías por rating promedio")
+    
+    subtitulo_estado = f" en {estado}" if estado != "Todos" else " en todos los estados"
+    st.write(
+        f"Mostrando categorías con al menos **{min_restaurantes}** restaurantes{subtitulo_estado}."
+    )
+    
+    if df_filtrado.empty:
+        st.warning("No hay restaurantes que coincidan con este filtro de estado.")
+    else:
+        # -----------------------------
+        # 5. Calcular rating promedio por categoría
+        # -----------------------------
+        category_ratings = {}
+    
+        for col in categorical_filtradas:
+            mask = df_filtrado[col] == 1
+            count = mask.sum()
+            if count >= min_restaurantes:
+                category_ratings[col] = df_filtrado.loc[mask, "stars"].mean()
+    
+        if not category_ratings:
+            st.warning(
+                f"No hay categorías con al menos {min_restaurantes} restaurantes en este estado."
+            )
+        else:
+            category_ratings = (
+                pd.Series(category_ratings)
+                .sort_values(ascending=False)
+            )
+    
+            category_ratings_top = category_ratings.head(top_n)
+    
+            # -----------------------------
+            # 6. Gráfica de barras horizontales
+            # -----------------------------
+            fig, ax = plt.subplots(figsize=(10, 6))
+    
+            palette = sns.color_palette("muted", n_colors=len(category_ratings_top))
+    
+            ax.barh(
+                category_ratings_top.index[::-1],
+                category_ratings_top.values[::-1],
+                color=palette,
+                edgecolor="black"
+            )
+    
+            titulo_estado = f" en {estado}" if estado != "Todos" else " (todos los estados)"
+            ax.set_title(
+                f"Top {len(category_ratings_top)} categorías por rating promedio{titulo_estado}",
+                fontsize=14
+            )
+            ax.set_xlabel("Rating promedio", fontsize=12)
+            plt.tight_layout()
+    
+            st.pyplot(fig)
+    
+            # (Opcional) tabla debajo
+            st.subheader("Detalle numérico")
+            st.dataframe(
+                category_ratings_top.rename("rating_promedio").to_frame()
+            )
+
 
 
 with tab3:
