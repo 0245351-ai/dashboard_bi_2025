@@ -1,6 +1,13 @@
 import streamlit as st
 
-st.markdown("""# 📊 Tablero de Inteligencia de Negocios
+st.title("Ejemplo de pestañas en Streamlit")
+
+tab1, tab2, tab3 = st.tabs(["Overview", "Histograma", "Mapa"])
+
+with tab1:
+    st.subheader("Overview")
+    st.write("Aquí van tus KPIs, texto introductorio, etc.")
+    st.markdown("""# 📊 Tablero de Inteligencia de Negocios
 
 **Universidad Panamericana CDMX — Facultad de Ingeniería**
 
@@ -121,3 +128,15 @@ El enfoque es académico, pero con estándares profesionales aplicables a escena
 **Autor:** Eduardo Llamas Brito
 **Email:** *(puedo agregarlo si quieres)*
 **GitHub:** *tu usuario*""")
+
+with tab2:
+    st.subheader("Histograma")
+    st.write("Aquí podrías poner tus gráficos de categorías vs estrellas.")
+    # Ejemplo:
+    # st.pyplot(fig)
+
+with tab3:
+    st.subheader("Mapa")
+    st.write("Aquí iría un mapa con la ubicación de los restaurantes.")
+    # Ejemplo:
+    # st.map(df[["latitude", "longitude"]])
