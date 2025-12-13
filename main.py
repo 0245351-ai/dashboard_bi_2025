@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-st.title("Dashboard interactivo para ")
+st.title("Dashboard interactivo - Proyecto Final")
 
 tab1, tab2 = st.tabs(["Overview", "Gráficos"])
 
@@ -71,6 +71,9 @@ El enfoque es académico, pero con estándares profesionales aplicables a escena
 
 
 with tab2:
+    st.markdown("""
+    Este dashboard está pensado para darle al usuario una idea general de métricas importantes para determinar la vialidad y aceptación general de algunos tipos de restaurantes en estados seleccionados de los Estados Unidos de América
+    """)
     st.subheader("Análisis por tipos de restaurante")
 
     # -----------------------------
@@ -103,12 +106,6 @@ with tab2:
         if col not in columnas_excluir
     ]
 
-    # Opcional: ver estados para debug
-    # st.write(df["state"].value_counts())
-    
-    # -----------------------------
-    # 3. Filtros en sidebar
-    # -----------------------------
     state_options = ["Todos"] + sorted(df["state"].dropna().unique().tolist())
 
     st.sidebar.markdown("### Filtros · Histograma")
@@ -166,9 +163,6 @@ with tab2:
         key="min_restaurantes"
     )
 
-    # -----------------------------
-    # 4. SECCIÓN: Histograma (conteo de categorías)
-    # -----------------------------
     st.markdown("## Histograma de tipos de restaurante")
 
     rmin, rmax = rango_estrellas
@@ -222,10 +216,7 @@ with tab2:
         st.dataframe(
             category_counts.head(top_n_hist).rename("count").to_frame()
         )
-
-    # -----------------------------
-    # 5. SECCIÓN: Ranking de categorías por rating
-    # -----------------------------
+        
     st.markdown("## Ranking de categorías por rating promedio")
 
     if estado_rank == "Todos":
