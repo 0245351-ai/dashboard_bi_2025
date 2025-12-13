@@ -76,9 +76,6 @@ with tab2:
     """)
     st.subheader("Análisis por tipos de restaurante")
 
-    # -----------------------------
-    # 1. Cargar datos (idealmente esto debería ir FUERA del tab, al inicio del script)
-    # -----------------------------
     @st.cache_data
     def load_data():
         df = pd.read_csv("Restaurantes USA 1.csv")
@@ -87,9 +84,6 @@ with tab2:
     
     df = load_data()
 
-    # -----------------------------
-    # 2. Detectar columnas categóricas (0/1) y filtrarlas (una sola vez)
-    # -----------------------------
     columnas_excluir = [
         'name', 'address', 'city', 'state', 'latitude', 'longitude',
         'stars', 'review_count', 'is_open', 'attributes',
