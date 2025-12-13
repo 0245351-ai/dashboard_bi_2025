@@ -3,13 +3,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-st.title("Ejemplo de pestañas en Streamlit")
+st.title("Dashboard interactivo para ")
 
-tab1, tab2, tab3 = st.tabs(["Overview", "Histograma", "Mapa"])
+tab1, tab2 = st.tabs(["Overview", "Gráficos"])
 
 with tab1:
     st.subheader("Overview")
-    st.write("Aquí van tus KPIs, texto introductorio, etc.")
     st.markdown("""# 📊 Tablero de Inteligencia de Negocios
 
 **Universidad Panamericana CDMX — Facultad de Ingeniería**
@@ -22,42 +21,21 @@ Este repositorio contiene el desarrollo de un **tablero interactivo** creado par
 
 ## 🎯 Objetivo del Proyecto
 
-El propósito de este tablero es **transformar datos brutos en información clara, visual y estratégica**, permitiendo identificar patrones, tendencias y oportunidades de mejora mediante técnicas de Business Intelligence.
+El propósito de este tablero es **permitirle al usuario visualizar tendencias en el sector restaurantero con base en reviews de yelp**, permitiendo identificar patrones, tendencias y oportunidades de mejora mediante técnicas de Business Intelligence.
 
 ---
 
 ## 🧠 Funcionalidades Principales
 
 * 📈 Visualizaciones dinámicas para análisis descriptivo.
-* 📅 Filtros interactivos (por periodo, categoría, unidad de negocio, etc.).
+* 📅 Filtros interactivos (rating, review, zona, tipo de restaurante).
 * 🔍 Análisis comparativo entre métricas clave.
-* 🧮 Cálculo automático de KPIs relevantes.
-* 📤 Exportación de insights o reportes (opcional según tu implementación).
-
----
-
-## 📂 Estructura del Repositorio
-
-```
-├── data/               # Conjuntos de datos utilizados (limpios o raw)
-├── dashboards/         # Archivos del tablero (Power BI, Tableau, Python, etc.)
-├── src/                # Código fuente para transformación o análisis
-├── assets/             # Imágenes, logos y recursos usados en el tablero
-└── README.md           # Documentación principal del proyecto
-```
-
-*Puedo personalizar esta sección con tus carpetas reales si me dices cómo está organizado tu repo.*
 
 ---
 
 ## 🛠️ Tecnologías Utilizadas
 
-Dependiendo de tu implementación, ajusta esta sección:
-
-* **Power BI** / **Tableau** / **Looker Studio**
-* **Python (pandas, numpy, matplotlib, seaborn, plotly)**
-* **Excel / CSV para ingesta de datos**
-* **Git / GitHub para control de versiones**
+* **Python (pandas, numpy, matplotlib, seaborn)**
 
 ---
 
@@ -70,52 +48,10 @@ Dependiendo de tu implementación, ajusta esta sección:
 2. **Transformación y modelado**
 
    * Creación de columnas calculadas.
-   * Definición de medidas DAX (si aplica).
-   * Modelado estrella o snowflake según el caso.
 
 3. **Construcción del tablero**
 
-   * Selección de gráficos.
    * Diseño enfocado en claridad y usabilidad.
-   * Implementación de KPIs y filtros.
-
-4. **Entrega y documentación**
-
-   * Explicación del contexto del negocio.
-   * Justificación de métricas seleccionadas.
-   * Conclusiones clave.
-
----
-
-## 📌 KPIs Incluidos
-
-*(Puedo completarlos si me dices cuáles usa tu tablero)*
-
-* Ingresos totales
-* Margen operativo
-* Crecimiento mensual
-* Rotación de clientes
-* Indicadores personalizados según el caso de estudio
-
----
-
-## 📥 Cómo Ejecutar o Visualizar el Tablero
-
-### Si usas Power BI:
-
-1. Descargar el archivo `.pbix` del repositorio.
-2. Abrirlo con **Power BI Desktop**.
-
-### Si usas Tableau:
-
-1. Abrir el archivo `.twbx` o conectarte a los datos incluidos.
-
-### Si usas un dashboard en Python:
-
-```bash
-pip install -r requirements.txt
-python app.py
-```
 
 ---
 
@@ -128,9 +64,10 @@ El enfoque es académico, pero con estándares profesionales aplicables a escena
 
 ## 📧 Contacto
 
-**Autor:** Eduardo Llamas Brito
-**Email:** *(puedo agregarlo si quieres)*
-**GitHub:** *tu usuario*""")
+**Autores:** Eduardo Llamas Brito, Emilio Hernández Contreras, Emilio Ramírez Martínez del Campo, Emilio Ignacio Romero Martínez
+**Email:** 0245351@up.edu.mx, 0212417@up.edu.mx, 0212517@up.edu.mx, 0241731@up.edu.mx
+
+""")
 
 
 with tab2:
@@ -354,13 +291,3 @@ with tab2:
             st.dataframe(
                 category_ratings_top.rename("rating_promedio").to_frame()
             )
-
-
-with tab3:
-    st.subheader("Mapa")
-    st.write("Aquí iría un mapa con la ubicación de los restaurantes.")
-
-    @st.cache_data
-    def load_data():
-        df2 = pd.read_excel("NSE_por_localidad_AMAI.xlsx")
-        return df2
