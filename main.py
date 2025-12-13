@@ -362,6 +362,5 @@ with tab3:
 
     @st.cache_data
     def load_data():
-        df = pd.read_csv("NSE_por_localidad_AMAI.xlsx")
-        df["state"] = df["state"].astype(str).str.strip()
-        return df
+        df2 = pd.read_excel("NSE_por_localidad_AMAI.xlsx")
+        return df2
