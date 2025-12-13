@@ -359,5 +359,9 @@ with tab2:
 with tab3:
     st.subheader("Mapa")
     st.write("Aquí iría un mapa con la ubicación de los restaurantes.")
-    # Ejemplo:
-    # st.map(df[["latitude", "longitude"]])
+
+    @st.cache_data
+    def load_data():
+        df = pd.read_csv("NSE_por_localidad_AMAI.xlsx")
+        df["state"] = df["state"].astype(str).str.strip()
+        return df
