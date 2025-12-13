@@ -13,8 +13,6 @@ with tab1:
 
 **Universidad Panamericana CDMX — Facultad de Ingeniería**
 
-<img src="https://posgrados-panamericana.up.edu.mx/hs-fs/hubfs/logo%20posgrados%20con%20espacio.png?width=137&name=logo%20posgrados%20con%20espacio.png" width = 100>
-
 Este repositorio contiene el desarrollo de un **tablero interactivo** creado para la clase de **Inteligencia de Negocios**, cuyo objetivo es analizar datos reales y generar visualizaciones accionables que apoyen la toma de decisiones en contextos empresariales.
 
 ---
